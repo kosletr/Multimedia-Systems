@@ -9,17 +9,16 @@ close all;
 
 %% Testing
 
-img = imread('flower2.jpg');
+originalImage = imread('flower.jpg');
 figure
-imshow(img)
+imshow(originalImage)
 
 subVec = [4,2,0];
-[Y,Cb,Cr] = convert2ycbcr(img,subVec);
-img2 = convert2RGB(Y,Cb,Cr, subVec);
+[Y,Cb,Cr] = convert2ycbcr(originalImage,subVec);
+RGBimage = convert2RGB(Y,Cb,Cr, subVec);
 
 figure
-imshow(uint8(img2))
-
+imshow(uint8(RGBimage))
 
 %% Convert RGB Image to YCbCr Image
 function [ImageY,ImageCb,ImageCr] = convert2ycbcr(imageRBG,subimg)
@@ -127,6 +126,13 @@ end
 %% Quantizer
 function qBlock = quantizeJPEG(dctBlock,qTable,qScale)
 
-qBlock = 0;
+qBlock = round(dctBlock./(qScale*qTable));
+
+end
+
+%% De-Quantizer
+function dctBlock = dequantizeJPEG(qBlock,qTable,qScale)
+
+dctBlock = qBlock.*(qScale*qTable);
 
 end
