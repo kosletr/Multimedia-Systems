@@ -136,3 +136,57 @@ function dctBlock = dequantizeJPEG(qBlock,qTable,qScale)
 dctBlock = qBlock.*(qScale*qTable);
 
 end
+
+%% Zig Zag Array
+function Z = zigzag(N)
+
+Z = zeros(N);
+
+% First Row
+for j = 2:N
+    if mod((1+j),2)==0
+        Z(1,j) = Z(1,j-1)+ 2*(j - 1);
+    else
+        Z(1,j) = Z(1,j-1) + 1;
+    end
+end
+
+% First Element of the Last Row
+if(mod(N,2)==0)
+    Z(N,1) = Z(1,N)+(N-1);
+else
+    Z(N,1) = Z(1,N)-(N-1);
+end
+
+% Last Row
+for j = 2:N
+    if mod((N+j),2)==1
+        Z(N,j) = Z(N,j-1)+ 2*(N+1-j);
+    else
+        Z(N,j) = Z(N,j-1) + 1;
+    end
+end
+
+% Upper Left Array
+for i = 2:N
+    for j = 1:N-i
+        if(mod((i+j),2)==1)
+            Z(i,j)=Z(i-1,j+1)+1;
+        else
+            Z(i,j)=Z(i-1,j+1)-1;
+        end
+    end
+end
+
+% Lower Right Array
+for i = N-1:-1:2
+    for j = N-i+1:N
+        if(mod((i+j),2)==1)
+            Z(i,j)=Z(i+1,j-1)-1;
+        else
+            Z(i,j)=Z(i+1,j-1)+1;
+        end
+    end
+end
+
+end
