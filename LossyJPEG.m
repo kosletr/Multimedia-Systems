@@ -230,6 +230,16 @@ while i<length(zzBlockVec)
 end
 runSymbols(end,2)=0; % Removing ending delimeter
 
+% max length until reset = 15
+i = 1;
+while i <= length(runSymbols)
+   if runSymbols(i,1)>15
+        runSymbols = [runSymbols(1:i-1,:);[15,0];runSymbols(i,:)-[16,0];runSymbols(i+1:end,:)];
+         i = 1;
+   end
+   i = i + 1;
+end
+
 end
 
 function qBlock = irunlength(runSymbols, DCpred)
