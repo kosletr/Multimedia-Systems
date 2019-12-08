@@ -12,40 +12,7 @@ close all;
 global qTableY
 global qTableCbCr
 global zigZagTable
-
-% Quantization Tables
-
-qTableY = [ ...
-    16 11 10 16 124 140 151 161;
-    12 12 14 19 126 158 160 155;
-    14 13 16 24 140 157 169 156;
-    14 17 22 29 151 187 180 162;
-    18 22 37 56 168 109 103 177;
-    24 35 55 64 181 104 113 192;
-    49 64 78 87 103 121 120 101;
-    72 92 95 98 112 100 103 199];
-
-qTableCbCr = [ ...
-    17 18 24 47 99 99 99 99;
-    18 21 26 66 99 99 99 99;
-    24 26 56 99 99 99 99 99;
-    47 66 99 99 99 99 99 99;
-    99 99 99 99 99 99 99 99;
-    99 99 99 99 99 99 99 99;
-    99 99 99 99 99 99 99 99;
-    99 99 99 99 99 99 99 99];
-
-% ZigZag Table 8x8
-
-zigZagTable = [ ...
-    1  2  6  7  15 16 28 29;
-    3  5  8  14 17 27 30 43;
-    4  9  13 18 26 31 42 44;
-    10 12 19 25 32 41 45 54;
-    11 20 24 33 40 46 53 55;
-    21 23 34 39 47 52 56 61;
-    22 35 38 48 51 57 60 62;
-    36 37 49 50 58 59 63 64];
+Tables
 
 %% Testing
 
@@ -66,7 +33,6 @@ Block = originalImage(i+1:i+8,j+1:j+8,1);
 dctBlock = blockDCT(Block);
 qBlock = quantizeJPEG(dctBlock,qTableY,1);
 runSymbols = runlength(qBlock,0);
-
 
 
 qblock = irunlength(runSymbols,0);
@@ -208,36 +174,27 @@ end
 zzBlockVec(1) = zzBlockVec(1) - DCpred;
 
 % Part 2
-zzBlockVec = [ NaN ; zzBlockVec ; NaN]; % Adding delimeters
+zzBlockVec = [zzBlockVec ; NaN]; % Adding delimeters
 i = 1;
 k = 1;
 
 % RLE
-
-while i<length(zzBlockVec)
-    i = i + 1;
+while i < length(zzBlockVec)+1
     countZeros = 0;
-    j = i;
-    while zzBlockVec(j-1)==0
+    while zzBlockVec(i)==0 && countZeros<15
         countZeros = countZeros + 1;
-        j = j -1;
+        i = i + 1;
     end
-    if zzBlockVec(i)~=0
-        runSymbols(k,1)=countZeros;
-        runSymbols(k,2)=zzBlockVec(i);
-        k = k + 1;
-    end
+    runSymbols(k,1)=countZeros;
+    runSymbols(k,2)=zzBlockVec(i);
+    k = k + 1;
+    i = i + 1;
 end
 runSymbols(end,2)=0; % Removing ending delimeter
 
-% max length until reset = 15
-i = 1;
-while i <= length(runSymbols)
-   if runSymbols(i,1)>15
-        runSymbols = [runSymbols(1:i-1,:);[15,0];runSymbols(i,:)-[16,0];runSymbols(i+1:end,:)];
-         i = 1;
-   end
-   i = i + 1;
+if zzBlockVec(end-1)==0 % Adding EOB
+    runSymbols(end,1)=runSymbols(end,1)-1;
+    runSymbols(end+1,:)=[0,0];
 end
 
 end
