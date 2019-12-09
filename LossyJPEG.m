@@ -29,14 +29,21 @@ originalImage = imread('flower.jpg');
 
 i=randi([0,239]);
 j=randi([0,134]);
+% i=130; j=130;
 Block = originalImage(i+1:i+8,j+1:j+8,1);
 dctBlock = blockDCT(Block);
+%%%
 qBlock = quantizeJPEG(dctBlock,qTableY,1);
+% qBlock = dctBlock;
+%%%
 runSymbols = runlength(qBlock,0);
 
 
 qblock = irunlength(runSymbols,0);
+%%%
 dctblock = dequantizeJPEG(qBlock,qTableY,1);
+% dctblock = qblock;
+%%%
 block = iblockDCT(dctblock);
 block = uint8(block);
 
@@ -187,15 +194,16 @@ while i < length(zzBlockVec)+1
     end
     runSymbols(k,1)=countZeros;
     runSymbols(k,2)=zzBlockVec(i);
+    if zzBlockVec(i) ~= 0 && isnan(zzBlockVec(i))==false
+        lastNonZeroInd = k;
+    end
     k = k + 1;
     i = i + 1;
 end
-runSymbols(end,2)=0; % Removing ending delimeter
 
-if zzBlockVec(end-1)==0 % Adding EOB
-    runSymbols(end,1)=runSymbols(end,1)-1;
-    runSymbols(end+1,:)=[0,0];
-end
+% Removing EOB zeros
+runSymbols=runSymbols(1:lastNonZeroInd,:);
+runSymbols(end+1,:) = [0,0]; % EOB
 
 end
 
@@ -206,12 +214,13 @@ runSymbols(end,2) = NaN; % Adding ending delimeter
 vec = [];
 
 % Inverse RLE
-for i=1:length(runSymbols)
+for i=1:length(runSymbols)-1
     vec = [vec;zeros(runSymbols(i,1),1)];
     vec(end+1,1)=runSymbols(i,2);
 end
 
-vec(end)=[]; % Removing ending delimeter
+% Adding EOB zeros
+vec = [vec;zeros(64-length(vec),1)];
 
 % Part 2
 global zigZagTable
@@ -224,5 +233,11 @@ for i = 1:length(vec)
 end
 
 qBlock(1,1) = qBlock(1,1) + DCpred;
+
+end
+
+function JPEGenc = JPEGencode(img,subimg,qScale)
+
+
 
 end
