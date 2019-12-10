@@ -1,7 +1,7 @@
-
-h=huffEnc(runSymbols,1)
-runSymbols
-length(h)
+runSymbols = [0,3;1,-2;0,-1;0,-1;0,-1;2,-1;0,0];
+huffstream=huffEnc(runSymbols,1);
+runS = huffDec(huffstream,1);
+runS == runSymbols
 
 function huffstream = huffEnc(runSymbols,y)
 
@@ -9,7 +9,7 @@ global DCCategoryCode
 global ACCategoryCode
 Tables
 
-huffstream = [];
+binaryStream = [];
 
 for k = 1:length(runSymbols)
 
@@ -39,8 +39,8 @@ end
 if k==1
     % Find Index of Category in DC table
     huffmanInd = category + 1;
-    DCvector=[DCCategoryCode{y}{huffmanInd}-'0',magnitude]
-    huffstream = [huffstream,DCvector];
+    DCvector=[DCCategoryCode{y}{huffmanInd}-'0',magnitude];
+    binaryStream = [binaryStream,DCvector];
 else
     % Find Index of Run/Category in AC table
     huffmanInd = 10*runSymbols(k,1)+(category+1);
@@ -49,10 +49,111 @@ else
     elseif runSymbols(k,1) == 0 && runSymbols(k,2) == 0 % EOB
         magnitude = [];
     end
-    ACvector = [ACCategoryCode{y}{huffmanInd}-'0',magnitude]
-    huffstream = [huffstream,ACvector];
+    ACvector = [ACCategoryCode{y}{huffmanInd}-'0',magnitude];
+    binaryStream = [binaryStream,ACvector];
 end
 
 end
 
+% Zero padding to create bytes
+while (mod(length(binaryStream),8)) ~= 0
+    binaryStream(end+1)=0;
+end
+
+% Convert Stream to bytes
+i = 0;
+k = 1;
+huffstream = zeros(1,length(binaryStream)/8);
+while i < length(binaryStream)
+   huffstream(k) = uint8(bi2de(binaryStream(i+1:i+8),'left-msb'));
+   i = i + 8;
+   k = k + 1;
+end
+
+end
+
+function runSymbols = huffDec(huffstream,y)
+
+global DCCategoryCode
+global ACCategoryCode
+Tables
+
+% Convert bytes to binary stream
+binaryStream = [];
+for i = 1:length(huffstream)
+binaryStream = [binaryStream,de2bi(huffstream(i),8,'left-msb')];
+end
+
+% Initialize
+k=1;
+bit = 1;
+stop = 2;
+
+% Convert binary vector to string
+strStream = sprintf('%d',binaryStream(bit:stop));
+
+% DC Difference Coefficient
+% Repeat until unique reference (DC Table)
+while length(find(DCCategoryCode{y}==strStream))~=1
+    stop = stop + 1;
+    strStream = sprintf('%d',binaryStream(bit:stop));
+end
+
+category = find(DCCategoryCode{y}==strStream)-1;
+bit = stop + 1;
+stop = stop + category;
+
+% 0 -> Negative Sign
+if binaryStream(bit)==0
+    DCdiff = bi2de(~binaryStream(bit:stop),'left-msb');
+else
+    DCdiff = bi2de(binaryStream(bit:stop),'left-msb');
+end
+
+% Add DC to runSymbols
+runSymbols(k,:)= [0 , DCdiff];
+
+stop = stop + 1;
+bit = stop;
+k = k + 1;
+
+% AC Coefficients
+while bit < length(binaryStream)
+    
+    % Convert binary vector to string
+    strStream = sprintf('%d',binaryStream(bit:stop));
+    
+    % Repeat until unique reference (ACTable)
+    while length(find(ACCategoryCode{y}==strStream))~=1
+        stop = stop + 1;
+        strStream = sprintf('%d',binaryStream(bit:stop));
+    end
+    
+    if isequal(binaryStream(bit:stop) , [1 0 1 0]) % EOB
+        runSymbols(k,:)= [0,0];
+        break;
+    end
+    
+    indexAC = find(ACCategoryCode{y}==strStream)-1;
+    precZeros = fix(indexAC/10);
+    category = mod(indexAC,10);
+    if precZeros == 15
+        category = category - 1;
+    end
+    
+    bit = stop + 1;
+    stop = stop + category;
+    
+    % 0 -> Negative Sign
+    if binaryStream(bit)==0
+        AC = -bi2de(~binaryStream(bit:stop),'left-msb');
+    else
+        AC = bi2de(binaryStream(bit:stop),'left-msb');
+    end
+    
+    runSymbols(k,:)= [precZeros,AC];
+    k = k + 1;
+    stop = stop + 1;
+    bit = stop;
+end
 end
