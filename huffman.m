@@ -1,7 +1,8 @@
-runSymbols = [0,3;1,-2;0,-1;0,-1;0,-1;2,-1;0,0];
-huffstream=huffEnc(runSymbols,1);
-runS = huffDec(huffstream,1);
-runS == runSymbols
+% runSymbols = [0,3;1,-2;0,-1;0,-1;0,-1;2,-1;0,0];
+% huffstream=huffEnc(runSymbols,1);
+huffstream = [uint8(247),uint8(250)];
+runS = huffDec(huffstream,3)
+% runS == runSymbols
 
 function huffstream = huffEnc(runSymbols,y)
 
@@ -11,7 +12,7 @@ Tables
 
 binaryStream = [];
 
-for k = 1:length(runSymbols)
+for k = 1:size(runSymbols,1)
 
 % Find the Category of the non-zero DCT coeffs
 category = 0;
@@ -129,7 +130,7 @@ while bit < length(binaryStream)
         strStream = sprintf('%d',binaryStream(bit:stop));
     end
     
-    if isequal(binaryStream(bit:stop) , [1 0 1 0]) % EOB
+    if isequal(strStream , ACCategoryCode{y}{1}) % EOB
         runSymbols(k,:)= [0,0];
         break;
     end

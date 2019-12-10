@@ -7,19 +7,12 @@ clc
 clear
 close all;
 
-%% Defining Tables
-
-global qTableY
-global qTableCbCr
-global zigZagTable
-Tables
-
 %% Testing
 
 originalImage = imread('flower.jpg');
-% figure
-% imshow(originalImage)
-%
+figure
+imshow(originalImage)
+
 % subVec = [4,2,0];
 % [Y,Cb,Cr] = convert2ycbcr(originalImage,subVec);
 % RGBimage = convert2RGB(Y,Cb,Cr, subVec);
@@ -27,21 +20,26 @@ originalImage = imread('flower.jpg');
 % figure
 % imshow(uint8(RGBimage))
 
-i=randi([0,239]);
-j=randi([0,134]);
-Block = originalImage(i+1:i+8,j+1:j+8,1);
-dctBlock = blockDCT(Block);
-qBlock = quantizeJPEG(dctBlock,qTableY,1);
-runSymbols = runlength(qBlock,0);
-huffstream = huffEnc(runSymbols,1);
-
-runSymbols = huffDec(huffstream,1);
-qblock = irunlength(runSymbols,0);
-dctblock = dequantizeJPEG(qBlock,qTableY,1);
-block = iblockDCT(dctblock);
-block = uint8(block);
-
+% i=randi([0,239]);
+% j=randi([0,134]);
+% Block = originalImage(i+1:i+8,j+1:j+8,1);
+% dctBlock = blockDCT(Block);
+% qBlock = quantizeJPEG(dctBlock,qTable{1},1);
+% runSymbols = runlength(qBlock,0);
+% huffstream = huffEnc(runSymbols,1);
+%
+% runSymbols = huffDec(huffstream,1);
+% qblock = irunlength(runSymbols,0);
+% dctblock = dequantizeJPEG(qBlock,qTable{1},1);
+% block = iblockDCT(dctblock);
+% block = uint8(block);
+%
 % sum(sum(qblock==qBlock))/64
+
+JPEGenc = JPEGencode(originalImage,[4,2,0],1);
+imgREC = JPEGdecode(JPEGenc,[4,2,0],1);
+figure
+imshow(imgREC)
 
 %% Convert RGB Image to YCbCr Image
 function [ImageY,ImageCb,ImageCr] = convert2ycbcr(imageRBG,subimg)
@@ -165,6 +163,8 @@ function runSymbols = runlength(qBlock,DCpred)
 
 % Part 1
 global zigZagTable
+Tables;
+
 zzBlockVec = zeros(length(qBlock)^2,1);
 
 % Get values in zig-zag form
@@ -179,6 +179,7 @@ zzBlockVec(1) = zzBlockVec(1) - DCpred;
 zzBlockVec = [zzBlockVec ; NaN]; % Adding delimeters
 i = 1;
 k = 1;
+lastNonZeroInd = 0;
 
 % RLE
 while i < length(zzBlockVec)+1
@@ -219,6 +220,8 @@ vec = [vec;zeros(64-length(vec),1)];
 
 % Part 2
 global zigZagTable
+Tables;
+
 qBlock = zeros(sqrt(length(vec)));
 
 % Place values back, in zig-zag form
@@ -231,55 +234,54 @@ qBlock(1,1) = qBlock(1,1) + DCpred;
 
 end
 
-function huffstream = huffEnc(runSymbols,y)
+%% Huffman Encoding
+function huffstream = huffEnc(runSymbols)
 
-global DCCategoryCode
-global ACCategoryCode
-
+global Nx
 binaryStream = [];
 
-for k = 1:length(runSymbols)
-
-% Find the Category of the non-zero DCT coeffs
-category = 0;
-
-if runSymbols(k,2)~=0
-    while category<11
-        if 2^(category-1)<=abs(runSymbols(k,2)) && abs(runSymbols(k,2))<=(2^category)-1
-            break
-        end
-        category = category + 1;
-    end
-else
+for k = 1:size(runSymbols,1)
+    
+    % Find the Category of the non-zero DCT coeffs
     category = 0;
-end
-
-% Convert non-zero DCT Coeffs to binary
-
-if runSymbols(k,2)<0 % 1's Complement
-   magnitude = double(~de2bi(-runSymbols(k,2),'left-msb')); 
-else
-    magnitude = de2bi(runSymbols(k,2),'left-msb');
-end
-
-
-if k==1
-    % Find Index of Category in DC table
-    huffmanInd = category + 1;
-    DCvector=[DCCategoryCode{y}{huffmanInd}-'0',magnitude];
-    binaryStream = [binaryStream,DCvector];
-else
-    % Find Index of Run/Category in AC table
-    huffmanInd = 10*runSymbols(k,1)+(category+1);
-    if runSymbols(k,1)==15 % index 152 --> ZRL
-        huffmanInd = huffmanInd + 1;
-    elseif runSymbols(k,1) == 0 && runSymbols(k,2) == 0 % EOB
-        magnitude = [];
+    
+    if runSymbols(k,2)~=0
+        while category<11
+            if 2^(category-1)<=abs(runSymbols(k,2)) && abs(runSymbols(k,2))<=(2^category)-1
+                break
+            end
+            category = category + 1;
+        end
+    else
+        category = 0;
     end
-    ACvector = [ACCategoryCode{y}{huffmanInd}-'0',magnitude];
-    binaryStream = [binaryStream,ACvector];
-end
-
+    
+    % Convert non-zero DCT Coeffs to binary
+    
+    if runSymbols(k,2)<0 % 1's Complement
+        magnitude = double(~de2bi(-runSymbols(k,2),'left-msb'));
+    else
+        magnitude = de2bi(runSymbols(k,2),'left-msb');
+    end
+    
+    
+    if k==1
+        % Find Index of Category in DC table
+        huffmanInd = category + 1;
+        DCvector=[Nx.DCTable{huffmanInd}-'0',magnitude];
+        binaryStream = [binaryStream,DCvector];
+    else
+        % Find Index of Run/Category in AC table
+        huffmanInd = 10*runSymbols(k,1)+(category+1);
+        if runSymbols(k,1)==15 % index 152 --> ZRL
+            huffmanInd = huffmanInd + 1;
+        elseif runSymbols(k,1) == 0 && runSymbols(k,2) == 0 % EOB
+            magnitude = [];
+        end
+        ACvector = [Nx.ACTable{huffmanInd}-'0',magnitude];
+        binaryStream = [binaryStream,ACvector];
+    end
+    
 end
 
 % Zero padding to create bytes
@@ -292,22 +294,22 @@ i = 0;
 k = 1;
 huffstream = zeros(1,length(binaryStream)/8);
 while i < length(binaryStream)
-   huffstream(k) = uint8(bi2de(binaryStream(i+1:i+8),'left-msb'));
-   i = i + 8;
-   k = k + 1;
+    huffstream(k) = uint8(bi2de(binaryStream(i+1:i+8),'left-msb'));
+    i = i + 8;
+    k = k + 1;
 end
 
 end
 
-function runSymbols = huffDec(huffstream,y)
+%% Huffman Decoding
+function runSymbols = huffDec(huffstream)
 
-global DCCategoryCode
-global ACCategoryCode
+global Nx
 
 % Convert bytes to binary stream
 binaryStream = [];
 for i = 1:length(huffstream)
-binaryStream = [binaryStream,de2bi(huffstream(i),8,'left-msb')];
+    binaryStream = [binaryStream,de2bi(huffstream(i),8,'left-msb')];
 end
 
 % Initialize
@@ -320,12 +322,12 @@ strStream = sprintf('%d',binaryStream(bit:stop));
 
 % DC Difference Coefficient
 % Repeat until unique reference (DC Table)
-while length(find(DCCategoryCode{y}==strStream))~=1
+while length(find(Nx.DCTable==strStream))~=1
     stop = stop + 1;
     strStream = sprintf('%d',binaryStream(bit:stop));
 end
 
-category = find(DCCategoryCode{y}==strStream)-1;
+category = find(Nx.DCTable==strStream)-1;
 bit = stop + 1;
 stop = stop + category;
 
@@ -350,17 +352,17 @@ while bit < length(binaryStream)
     strStream = sprintf('%d',binaryStream(bit:stop));
     
     % Repeat until unique reference (ACTable)
-    while length(find(ACCategoryCode{y}==strStream))~=1
+    while length(find(Nx.ACTable==strStream))~=1
         stop = stop + 1;
         strStream = sprintf('%d',binaryStream(bit:stop));
     end
     
-    if isequal(binaryStream(bit:stop) , [1 0 1 0]) % EOB
+    if isequal(strStream , Nx.ACTable{1}) % EOB
         runSymbols(k,:)= [0,0];
         break;
     end
     
-    indexAC = find(ACCategoryCode{y}==strStream)-1;
+    indexAC = find(Nx.ACTable==strStream)-1;
     precZeros = fix(indexAC/10);
     category = mod(indexAC,10);
     if precZeros == 15
@@ -384,8 +386,82 @@ while bit < length(binaryStream)
 end
 end
 
+%% JPEG Encoding
 function JPEGenc = JPEGencode(img,subimg,qScale)
 
+global Nx;
+Tables;
 
+YCbCr = cell(1,3);
+
+[YCbCr{1},YCbCr{2},YCbCr{3}] = convert2ycbcr(img,subimg);
+dim = size(YCbCr{1},1)/8+2*size(YCbCr{2},1)/8;
+dim = dim + size(YCbCr{1},2)/8+2*size(YCbCr{2},2)/8;
+
+JPEGenc = cell(dim,1);
+count = 1;
+
+for blockType = 1 : 3
+    
+    DCpred = 0;
+    
+    for indHor = 1 : size(YCbCr{blockType},1)/8
+        for indVer = 1 : size(YCbCr{blockType},2)/8
+            
+            Nx.blkType = blockType;
+            Nx.indHor = indHor;
+            Nx.indVer = indVer;
+            Nx.qTable = qTable{blockType};
+            Nx.DCTable = DCCategoryCode{blockType};
+            Nx.ACTable = ACCategoryCode{blockType};
+            
+            block = YCbCr{blockType}((indHor-1)*8 + 1:indHor*8,(indVer-1)*8 + 1:indVer*8);
+            dctBlock = blockDCT(block);
+            qBlock = quantizeJPEG(dctBlock,Nx.qTable,qScale);
+            
+            runSymbols = runlength(qBlock,DCpred);
+            DCpred = qBlock(1,1);
+            
+            Nx.huffstream = huffEnc(runSymbols);
+            
+            JPEGenc{count} = Nx;
+            count = count + 1;
+        end
+    end
+end
+
+end
+
+
+function imgREC = JPEGdecode(JPEGenc,subimg,qScale)
+global qTable
+global DCTable
+global ACTable
+
+DCpred = 0;
+YCbCr = cell(1,3);
+
+for count = 1 : length(JPEGenc)
+    
+    blockType = JPEGenc{count}.blkType;
+    indHor = JPEGenc{count}.indHor;
+    indVer  = JPEGenc{count}.indVer;
+    qTable  = JPEGenc{count}.qTable;
+    DCTable = JPEGenc{count}.DCTable;
+    ACTable = JPEGenc{count}.ACTable;
+    
+    runSymbols = huffDec(JPEGenc{count}.huffstream);
+    
+    qBlock = irunlength(runSymbols,DCpred);
+    DCpred = qBlock(1,1);
+    
+    dctBlock = dequantizeJPEG(qBlock,qTable,qScale);
+    block = iblockDCT(dctBlock);
+    
+    YCbCr{blockType}((indHor-1)*8 + 1:indHor*8,(indVer-1)*8 + 1:indVer*8) = block;
+    
+end
+
+imgREC = convert2RGB(YCbCr{1},YCbCr{2},YCbCr{3}, subimg);
 
 end

@@ -1,7 +1,7 @@
 %% Tables
 
 %% Luminance quantization table (page 143)
-qTableY = [ ...
+qTable{1} = [ ...
     16 11 10 16 124 140 151 161;
     12 12 14 19 126 158 160 155;
     14 13 16 24 140 157 169 156;
@@ -11,8 +11,8 @@ qTableY = [ ...
     49 64 78 87 103 121 120 101;
     72 92 95 98 112 100 103 199];
 
-%% Chrominance quantization table (page 143)
-qTableCbCr = [ ...
+%% Chrominance quantization tables (page 143)
+qTable{2} = [ ...
     17 18 24 47 99 99 99 99;
     18 21 26 66 99 99 99 99;
     24 26 56 99 99 99 99 99;
@@ -21,6 +21,8 @@ qTableCbCr = [ ...
     99 99 99 99 99 99 99 99;
     99 99 99 99 99 99 99 99;
     99 99 99 99 99 99 99 99];
+
+qTable{3} = qTable{2};
 
 %% ZigZag Table 8x8
 zigZagTable = [ ...
@@ -65,6 +67,7 @@ DCCategoryCode{2} = [ ...
     "11111111110"
     ];
 
+DCCategoryCode{3} = DCCategoryCode{2};
 
 %% Table for luminance AC coefficients  (page 150)
 ACCategoryCode{1} = [ ...
@@ -397,3 +400,5 @@ ACCategoryCode{2} = [...
     "1111111111111101"
     "1111111111111110"
     ];
+
+ACCategoryCode{3} = ACCategoryCode{2};

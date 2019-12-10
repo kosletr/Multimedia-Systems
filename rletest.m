@@ -1,10 +1,12 @@
 clc
 clear
 
-zzBlockVec = [121 30 0 0 3 0 -1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0]';
+% zzBlockVec = [121 30 0 0 3 0 -1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0]';
+zzBlockVec = zeros(64,1);
 length(zzBlockVec)
 i = 1;
 k = 1;
+lastNonZeroInd = 0;
 
 zzBlockVec = [zzBlockVec;NaN]; % Adding ending delimeter
 
