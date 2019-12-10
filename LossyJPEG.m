@@ -18,7 +18,7 @@ imshow(originalImage)
 % RGBimage = convert2RGB(Y,Cb,Cr, subVec);
 %
 % figure
-% imshow(uint8(RGBimage))
+% imshow(RGBimage)
 
 % i=randi([0,239]);
 % j=randi([0,134]);
@@ -127,6 +127,7 @@ for i = 1:size(imageYCbCr,1)
     end
 end
 
+ImageRGB = uint8(ImageRGB);
 
 end
 
@@ -206,7 +207,9 @@ end
 function qBlock = irunlength(runSymbols, DCpred)
 
 % Part 1
-runSymbols(end,2) = NaN; % Adding ending delimeter
+% if size(runSymbols,1)~=1
+%     runSymbols(end,2) = NaN; % Adding ending delimeter
+% end
 vec = [];
 
 % Inverse RLE
@@ -304,7 +307,8 @@ end
 %% Huffman Decoding
 function runSymbols = huffDec(huffstream)
 
-global Nx
+global DCTable
+global ACTable
 
 % Convert bytes to binary stream
 binaryStream = [];
@@ -322,18 +326,23 @@ strStream = sprintf('%d',binaryStream(bit:stop));
 
 % DC Difference Coefficient
 % Repeat until unique reference (DC Table)
-while length(find(Nx.DCTable==strStream))~=1
+while length(find(DCTable==strStream))~=1
     stop = stop + 1;
     strStream = sprintf('%d',binaryStream(bit:stop));
 end
 
-category = find(Nx.DCTable==strStream)-1;
+category = find(DCTable==strStream)-1;
 bit = stop + 1;
 stop = stop + category;
 
+if isequal(strStream , DCTable{1}) % EOB
+    runSymbols(k,:)= [0,0];
+    return
+end
+
 % 0 -> Negative Sign
 if binaryStream(bit)==0
-    DCdiff = bi2de(~binaryStream(bit:stop),'left-msb');
+    DCdiff = -bi2de(~binaryStream(bit:stop),'left-msb');
 else
     DCdiff = bi2de(binaryStream(bit:stop),'left-msb');
 end
@@ -352,25 +361,33 @@ while bit < length(binaryStream)
     strStream = sprintf('%d',binaryStream(bit:stop));
     
     % Repeat until unique reference (ACTable)
-    while length(find(Nx.ACTable==strStream))~=1
+    while length(find(ACTable==strStream))~=1
         stop = stop + 1;
         strStream = sprintf('%d',binaryStream(bit:stop));
     end
     
-    if isequal(strStream , Nx.ACTable{1}) % EOB
+    if isequal(strStream , ACTable{1}) % EOB
         runSymbols(k,:)= [0,0];
         break;
     end
     
-    indexAC = find(Nx.ACTable==strStream)-1;
+    indexAC = find(ACTable==strStream)-1;
     precZeros = fix(indexAC/10);
     category = mod(indexAC,10);
-    if precZeros == 15
+    if indexAC > 151
         category = category - 1;
     end
     
     bit = stop + 1;
     stop = stop + category;
+    
+    if isequal(strStream , ACTable{152}) % ZRL
+        runSymbols(k,:)= [15,0];
+        k = k + 1;
+        stop = stop + 1;
+        bit = stop;
+        continue;
+    end
     
     % 0 -> Negative Sign
     if binaryStream(bit)==0
@@ -432,23 +449,26 @@ end
 
 end
 
-
+%% JPEG Decode
 function imgREC = JPEGdecode(JPEGenc,subimg,qScale)
-global qTable
+
 global DCTable
 global ACTable
 
-DCpred = 0;
 YCbCr = cell(1,3);
 
 for count = 1 : length(JPEGenc)
     
     blockType = JPEGenc{count}.blkType;
-    indHor = JPEGenc{count}.indHor;
+    indHor  = JPEGenc{count}.indHor;
     indVer  = JPEGenc{count}.indVer;
     qTable  = JPEGenc{count}.qTable;
     DCTable = JPEGenc{count}.DCTable;
     ACTable = JPEGenc{count}.ACTable;
+    
+    if indHor == 1 && indVer == 1
+        DCpred = 0;
+    end
     
     runSymbols = huffDec(JPEGenc{count}.huffstream);
     
@@ -458,7 +478,7 @@ for count = 1 : length(JPEGenc)
     dctBlock = dequantizeJPEG(qBlock,qTable,qScale);
     block = iblockDCT(dctBlock);
     
-    YCbCr{blockType}((indHor-1)*8 + 1:indHor*8,(indVer-1)*8 + 1:indVer*8) = block;
+    YCbCr{blockType}((indHor-1)*8 + 1:indHor*8,(indVer-1)*8 + 1:indVer*8) = floor(block);
     
 end
 

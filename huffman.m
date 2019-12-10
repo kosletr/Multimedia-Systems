@@ -1,8 +1,16 @@
-% runSymbols = [0,3;1,-2;0,-1;0,-1;0,-1;2,-1;0,0];
-% huffstream=huffEnc(runSymbols,1);
-huffstream = [uint8(247),uint8(250)];
-runS = huffDec(huffstream,3)
-% runS == runSymbols
+runSymbols = [ ...
+     0    -2
+     0     1
+     0    -3
+     0     1
+    15     0
+     4     1
+     0     0
+     ];
+huffstream=huffEnc(runSymbols,1);
+% huffstream = [105,67,254,93,232];
+runS = huffDec(huffstream,1)
+runS == runSymbols
 
 function huffstream = huffEnc(runSymbols,y)
 
@@ -106,7 +114,7 @@ stop = stop + category;
 
 % 0 -> Negative Sign
 if binaryStream(bit)==0
-    DCdiff = bi2de(~binaryStream(bit:stop),'left-msb');
+    DCdiff = -bi2de(~binaryStream(bit:stop),'left-msb');
 else
     DCdiff = bi2de(binaryStream(bit:stop),'left-msb');
 end
@@ -125,9 +133,11 @@ while bit < length(binaryStream)
     strStream = sprintf('%d',binaryStream(bit:stop));
     
     % Repeat until unique reference (ACTable)
-    while length(find(ACCategoryCode{y}==strStream))~=1
+    while length(find(ACCategoryCode{y}==strStream))~= 1
+        find(ACCategoryCode{y}==strStream)
         stop = stop + 1;
         strStream = sprintf('%d',binaryStream(bit:stop));
+        find(ACCategoryCode{y}==strStream)
     end
     
     if isequal(strStream , ACCategoryCode{y}{1}) % EOB
@@ -139,11 +149,19 @@ while bit < length(binaryStream)
     precZeros = fix(indexAC/10);
     category = mod(indexAC,10);
     if precZeros == 15
-        category = category - 1;
+        indexAC = indexAC + 1;
     end
     
     bit = stop + 1;
     stop = stop + category;
+    
+    if indexAC == 152 % ZRL
+        runSymbols(k,:)= [15,0];
+        k = k + 1;
+        stop = stop + 1;
+        bit = stop;
+        continue;
+    end
     
     % 0 -> Negative Sign
     if binaryStream(bit)==0
