@@ -1,10 +1,6 @@
 runSymbols = [ ...
-     0    -2
-     0     1
-     0    -3
-     0     1
-    15     0
-     4     1
+     0     0
+    10     2
      0     0
      ];
 huffstream=huffEnc(runSymbols,1);
@@ -46,6 +42,7 @@ end
 
 
 if k==1
+
     % Find Index of Category in DC table
     huffmanInd = category + 1;
     DCvector=[DCCategoryCode{y}{huffmanInd}-'0',magnitude];
@@ -112,13 +109,18 @@ category = find(DCCategoryCode{y}==strStream)-1;
 bit = stop + 1;
 stop = stop + category;
 
+if category == 0 % DC = 0
+    DCdiff = 0;
+    stop = stop + 1;
+else
+
 % 0 -> Negative Sign
 if binaryStream(bit)==0
     DCdiff = -bi2de(~binaryStream(bit:stop),'left-msb');
 else
     DCdiff = bi2de(binaryStream(bit:stop),'left-msb');
 end
-
+end
 % Add DC to runSymbols
 runSymbols(k,:)= [0 , DCdiff];
 
@@ -134,10 +136,8 @@ while bit < length(binaryStream)
     
     % Repeat until unique reference (ACTable)
     while length(find(ACCategoryCode{y}==strStream))~= 1
-        find(ACCategoryCode{y}==strStream)
         stop = stop + 1;
         strStream = sprintf('%d',binaryStream(bit:stop));
-        find(ACCategoryCode{y}==strStream)
     end
     
     if isequal(strStream , ACCategoryCode{y}{1}) % EOB
@@ -148,8 +148,8 @@ while bit < length(binaryStream)
     indexAC = find(ACCategoryCode{y}==strStream)-1;
     precZeros = fix(indexAC/10);
     category = mod(indexAC,10);
-    if precZeros == 15
-        indexAC = indexAC + 1;
+    if indexAC > 151
+        category = category - 1;
     end
     
     bit = stop + 1;

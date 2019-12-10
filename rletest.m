@@ -1,14 +1,17 @@
 clc
 clear
 
-% zzBlockVec = [121 30 0 0 3 0 -1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0]';
-zzBlockVec = zeros(64,1);
-length(zzBlockVec)
-i = 1;
-k = 1;
-lastNonZeroInd = 0;
+zzBlockVec = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]';
+% zzBlockVec = zeros(64,1);
 
-zzBlockVec = [zzBlockVec;NaN]; % Adding ending delimeter
+zzBlockVec = [zzBlockVec ; NaN]; % Adding delimeters
+
+
+lastNonZeroInd = 1;
+runSymbols(1,1) = 0;
+runSymbols(1,2) = zzBlockVec(1);
+k = 2;
+i = 2;
 
 while i < length(zzBlockVec)+1
     countZeros = 0;
@@ -41,4 +44,6 @@ for i=1:length(runSymbols)-1
     vec(end+1,1)=runSymbols(i,2);
 end
 vec = [vec;zeros(64-length(vec),1)];
-vec
+
+
+sum(vec == zzBlockVec(1:end-1))/length(vec)

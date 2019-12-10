@@ -36,6 +36,8 @@ imshow(originalImage)
 %
 % sum(sum(qblock==qBlock))/64
 
+
+
 JPEGenc = JPEGencode(originalImage,[4,2,0],1);
 imgREC = JPEGdecode(JPEGenc,[4,2,0],1);
 figure
@@ -178,9 +180,13 @@ zzBlockVec(1) = zzBlockVec(1) - DCpred;
 
 % Part 2
 zzBlockVec = [zzBlockVec ; NaN]; % Adding delimeters
-i = 1;
-k = 1;
-lastNonZeroInd = 0;
+
+% DC Term
+lastNonZeroInd = 1;
+runSymbols(1,1) = 0;
+runSymbols(1,2) = zzBlockVec(1);
+k = 2;
+i = 2;
 
 % RLE
 while i < length(zzBlockVec)+1
@@ -207,9 +213,6 @@ end
 function qBlock = irunlength(runSymbols, DCpred)
 
 % Part 1
-% if size(runSymbols,1)~=1
-%     runSymbols(end,2) = NaN; % Adding ending delimeter
-% end
 vec = [];
 
 % Inverse RLE
@@ -278,7 +281,7 @@ for k = 1:size(runSymbols,1)
         huffmanInd = 10*runSymbols(k,1)+(category+1);
         if runSymbols(k,1)==15 % index 152 --> ZRL
             huffmanInd = huffmanInd + 1;
-        elseif runSymbols(k,1) == 0 && runSymbols(k,2) == 0 % EOB
+        elseif isequal(runSymbols(k,:),[0 0]) % EOB
             magnitude = [];
         end
         ACvector = [Nx.ACTable{huffmanInd}-'0',magnitude];
@@ -335,18 +338,17 @@ category = find(DCTable==strStream)-1;
 bit = stop + 1;
 stop = stop + category;
 
-if isequal(strStream , DCTable{1}) % EOB
-    runSymbols(k,:)= [0,0];
-    return
-end
-
-% 0 -> Negative Sign
-if binaryStream(bit)==0
-    DCdiff = -bi2de(~binaryStream(bit:stop),'left-msb');
+if category == 0 % DC = 0
+    DCdiff = 0;
+    stop = stop + 1;
 else
-    DCdiff = bi2de(binaryStream(bit:stop),'left-msb');
+    % 0 -> Negative Sign
+    if binaryStream(bit)==0
+        DCdiff = -bi2de(~binaryStream(bit:stop),'left-msb');
+    else
+        DCdiff = bi2de(binaryStream(bit:stop),'left-msb');
+    end
 end
-
 % Add DC to runSymbols
 runSymbols(k,:)= [0 , DCdiff];
 
@@ -401,6 +403,7 @@ while bit < length(binaryStream)
     stop = stop + 1;
     bit = stop;
 end
+
 end
 
 %% JPEG Encoding
@@ -438,7 +441,7 @@ for blockType = 1 : 3
             
             runSymbols = runlength(qBlock,DCpred);
             DCpred = qBlock(1,1);
-            
+           
             Nx.huffstream = huffEnc(runSymbols);
             
             JPEGenc{count} = Nx;
@@ -473,6 +476,7 @@ for count = 1 : length(JPEGenc)
     runSymbols = huffDec(JPEGenc{count}.huffstream);
     
     qBlock = irunlength(runSymbols,DCpred);
+    
     DCpred = qBlock(1,1);
     
     dctBlock = dequantizeJPEG(qBlock,qTable,qScale);
