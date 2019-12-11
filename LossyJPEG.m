@@ -417,8 +417,8 @@ YCbCr = cell(1,3);
 dim = size(YCbCr{1},1)/8+2*size(YCbCr{2},1)/8;
 dim = dim + size(YCbCr{1},2)/8+2*size(YCbCr{2},2)/8;
 
-JPEGenc = cell(dim+1,1);
-count = 2;
+JPEGenc = cell(dim,1);
+count = 1;
 
 for blockType = 1 : 3
     
