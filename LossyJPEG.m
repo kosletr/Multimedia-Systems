@@ -5,15 +5,21 @@
 
 clc
 clear
-close all;
 
 %% Testing
 
-originalImage = imread('flower.jpg');
+originalImage = imread('redDress.jpg');
 figure
 imshow(originalImage)
 
-% subVec = [4,2,0];
+subimg = [4,2,0];
+qScale = 1;
+
+JPEGenc = JPEGencode(originalImage,subimg,qScale);
+imgREC = JPEGdecode(JPEGenc,subimg,qScale);
+figure
+imshow(imgREC)
+
 % [Y,Cb,Cr] = convert2ycbcr(originalImage,subVec);
 % RGBimage = convert2RGB(Y,Cb,Cr, subVec);
 %
@@ -36,15 +42,8 @@ imshow(originalImage)
 %
 % sum(sum(qblock==qBlock))/64
 
-
-
-JPEGenc = JPEGencode(originalImage,[4,2,0],1);
-imgREC = JPEGdecode(JPEGenc,[4,2,0],1);
-figure
-imshow(imgREC)
-
 %% Convert RGB Image to YCbCr Image
-function [ImageY,ImageCb,ImageCr] = convert2ycbcr(imageRBG,subimg)
+function [imageY, imageCb, imageCr] = convert2ycbcr(imageRBG, subimg)
 
 % Transformation Matrix
 Tycbcr = [.299,.587,.114;
@@ -62,22 +61,22 @@ for i = 1:size(imageRBG,1)
     end
 end
 
-ImageY  = newImg(:,:,1);
+imageY  = newImg(:,:,1);
 
-if subimg == [4,4,4]
+if isequal(subimg,[4,4,4])
     
-    ImageCb = newImg(:,:,2);
-    ImageCr = newImg(:,:,3);
+    imageCb = newImg(:,:,2);
+    imageCr = newImg(:,:,3);
     
-elseif subimg == [4,2,2]
+elseif isequal(subimg,[4,2,2])
     
-    ImageCb = newImg(:,1:2:end,2);
-    ImageCr = newImg(:,1:2:end,3);
+    imageCb = newImg(:,1:2:end,2);
+    imageCr = newImg(:,1:2:end,3);
     
-elseif subimg == [4,2,0]
+elseif isequal(subimg,[4,2,0])
     
-    ImageCb = newImg(1:2:end,1:2:end,2);
-    ImageCr = newImg(1:2:end,1:2:end,3);
+    imageCb = newImg(1:2:end,1:2:end,2);
+    imageCr = newImg(1:2:end,1:2:end,3);
     
 else
     fprintf("Subsampling Vector: ")
@@ -87,25 +86,25 @@ end
 end
 
 %% Convert YCbCr Image to RGB Image
-function ImageRGB = convert2RGB(ImageY,ImageCb, ImageCr, subimg)
+function imageRGB = convert2rgb(imageY, imageCb, imageCr, subimg)
 
 % Preproccesing
-imageYCbCr(:,:,1)=ImageY;
+imageYCbCr(:,:,1)=imageY;
 
-if subimg == [4,4,4]
+if isequal(subimg,[4,4,4])
     
-    imageYCbCr(:,:,2) = ImageCb;
-    imageYCbCr(:,:,3) = ImageCr;
+    imageYCbCr(:,:,2) = imageCb;
+    imageYCbCr(:,:,3) = imageCr;
     
-elseif subimg == [4,2,2]
+elseif isequal(subimg,[4,2,2])
     
-    imageYCbCr(:,:,2) = kron(ImageCb,ones(1,2));
-    imageYCbCr(:,:,3) = kron(ImageCr,ones(1,2));
+    imageYCbCr(:,:,2) = kron(imageCb,ones(1,2));
+    imageYCbCr(:,:,3) = kron(imageCr,ones(1,2));
     
-elseif subimg == [4,2,0]
+elseif isequal(subimg,[4,2,0])
     
-    imageYCbCr(:,:,2) = kron(ImageCb,ones(2));
-    imageYCbCr(:,:,3) = kron(ImageCr,ones(2));
+    imageYCbCr(:,:,2) = kron(imageCb,ones(2));
+    imageYCbCr(:,:,3) = kron(imageCr,ones(2));
     
 else
     fprintf("Subsampling Vector: ")
@@ -118,18 +117,18 @@ Trgb = [1,0,1.402;
     1,-.344136,-.714136;
     1,1.772,0];
 
-ImageRGB = zeros(size(imageYCbCr));
+imageRGB = zeros(size(imageYCbCr));
 n = zeros(3,1);
 
 % Transformation from YCbCr to RGB
 for i = 1:size(imageYCbCr,1)
     for j = 1:size(imageYCbCr,2)
         n(:,1) = imageYCbCr(i,j,1:3);
-        ImageRGB(i,j,1:3) = Trgb*(n-[0,128,128]');
+        imageRGB(i,j,1:3) = Trgb*(n-[0,128,128]');
     end
 end
 
-ImageRGB = uint8(ImageRGB);
+imageRGB = uint8(imageRGB);
 
 end
 
@@ -141,28 +140,28 @@ dctBlock =  dct2(block);
 end
 
 %% Inverse Discrete Cosine Transform of a dct Block
-function block = iblockDCT(dctBlock)
+function block = iBlockDCT(dctBlock)
 
 block =  idct2(dctBlock);
 
 end
 
 %% Quantizer
-function qBlock = quantizeJPEG(dctBlock,qTable,qScale)
+function qBlock = quantizeJPEG(dctBlock, qTable, qScale)
 
 qBlock = round(dctBlock./(qScale*qTable));
 
 end
 
 %% De-Quantizer
-function dctBlock = dequantizeJPEG(qBlock,qTable,qScale)
+function dctBlock = dequantizeJPEG(qBlock, qTable, qScale)
 
 dctBlock = qBlock.*(qScale*qTable);
 
 end
 
 %% Run Length Encoding
-function runSymbols = runlength(qBlock,DCpred)
+function runSymbols = runLength(qBlock, DCpred)
 
 % Part 1
 global zigZagTable
@@ -210,7 +209,7 @@ runSymbols(end+1,:) = [0,0]; % EOB
 
 end
 
-function qBlock = irunlength(runSymbols, DCpred)
+function qBlock = irunLength(runSymbols, DCpred)
 
 % Part 1
 vec = [];
@@ -241,7 +240,7 @@ qBlock(1,1) = qBlock(1,1) + DCpred;
 end
 
 %% Huffman Encoding
-function huffstream = huffEnc(runSymbols)
+function huffStream = huffEnc(runSymbols)
 
 global Nx
 binaryStream = [];
@@ -298,9 +297,9 @@ end
 % Convert Stream to bytes
 i = 0;
 k = 1;
-huffstream = zeros(1,length(binaryStream)/8);
+huffStream = zeros(1,length(binaryStream)/8);
 while i < length(binaryStream)
-    huffstream(k) = uint8(bi2de(binaryStream(i+1:i+8),'left-msb'));
+    huffStream(k) = uint8(bi2de(binaryStream(i+1:i+8),'left-msb'));
     i = i + 8;
     k = k + 1;
 end
@@ -308,15 +307,15 @@ end
 end
 
 %% Huffman Decoding
-function runSymbols = huffDec(huffstream)
+function runSymbols = huffDec(huffStream)
 
 global DCTable
 global ACTable
 
 % Convert bytes to binary stream
 binaryStream = [];
-for i = 1:length(huffstream)
-    binaryStream = [binaryStream,de2bi(huffstream(i),8,'left-msb')];
+for i = 1:length(huffStream)
+    binaryStream = [binaryStream,de2bi(huffStream(i),8,'left-msb')];
 end
 
 % Initialize
@@ -407,7 +406,7 @@ end
 end
 
 %% JPEG Encoding
-function JPEGenc = JPEGencode(img,subimg,qScale)
+function JPEGenc = JPEGencode(img, subimg, qScale)
 
 global Nx;
 Tables;
@@ -418,8 +417,8 @@ YCbCr = cell(1,3);
 dim = size(YCbCr{1},1)/8+2*size(YCbCr{2},1)/8;
 dim = dim + size(YCbCr{1},2)/8+2*size(YCbCr{2},2)/8;
 
-JPEGenc = cell(dim,1);
-count = 1;
+JPEGenc = cell(dim+1,1);
+count = 2;
 
 for blockType = 1 : 3
     
@@ -439,9 +438,9 @@ for blockType = 1 : 3
             dctBlock = blockDCT(block);
             qBlock = quantizeJPEG(dctBlock,Nx.qTable,qScale);
             
-            runSymbols = runlength(qBlock,DCpred);
+            runSymbols = runLength(qBlock,DCpred);
             DCpred = qBlock(1,1);
-           
+            
             Nx.huffstream = huffEnc(runSymbols);
             
             JPEGenc{count} = Nx;
@@ -453,7 +452,7 @@ end
 end
 
 %% JPEG Decode
-function imgREC = JPEGdecode(JPEGenc,subimg,qScale)
+function imgRec = JPEGdecode(JPEGenc, subimg, qScale)
 
 global DCTable
 global ACTable
@@ -475,17 +474,17 @@ for count = 1 : length(JPEGenc)
     
     runSymbols = huffDec(JPEGenc{count}.huffstream);
     
-    qBlock = irunlength(runSymbols,DCpred);
+    qBlock = irunLength(runSymbols,DCpred);
     
     DCpred = qBlock(1,1);
     
     dctBlock = dequantizeJPEG(qBlock,qTable,qScale);
-    block = iblockDCT(dctBlock);
+    block = iBlockDCT(dctBlock);
     
     YCbCr{blockType}((indHor-1)*8 + 1:indHor*8,(indVer-1)*8 + 1:indVer*8) = floor(block);
     
 end
 
-imgREC = convert2RGB(YCbCr{1},YCbCr{2},YCbCr{3}, subimg);
+imgRec = convert2rgb(YCbCr{1},YCbCr{2},YCbCr{3}, subimg);
 
 end
