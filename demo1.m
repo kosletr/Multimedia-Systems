@@ -18,7 +18,7 @@ img2 = imgStruct.img2_down;
 part = 'A';
 
 % Image 1
-mainDemo(img1, [4 4 4], 1, part)
+mainDemo(img1, [4 2 0], 1, part)
 
 % Image 2
 mainDemo(img2, [4 2 2], 2, part)

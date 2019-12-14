@@ -17,6 +17,15 @@ for i = 1:size(imageRBG,1)
     end
 end
 
+% Remove rows, cols to fit 8x8 blocks
+while mod(size(newImg,1),16)~=0
+    newImg(end,:,:)= [];
+end
+while mod(size(newImg,2),16)~=0
+    newImg(:,end,:)= [];
+end
+
+% Sub-sampling
 imageY  = newImg(:,:,1);
 
 if isequal(subimg,[4,4,4])

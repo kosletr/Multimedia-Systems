@@ -8,7 +8,7 @@ clear
 
 %% Testing
 
-originalImage = imread('redDress.jpg');
+originalImage = imread('flower2.jpg');
 figure
 imshow(originalImage)
 
@@ -59,6 +59,13 @@ for i = 1:size(imageRBG,1)
         n(:,1) = imageRBG(i,j,1:3);
         newImg(i,j,1:3) = [0,128,128]'+Tycbcr*n;
     end
+end
+
+while mod(size(newImg,1),16)~=0
+    newImg(end,:,:)= [];
+end
+while mod(size(newImg,2),16)~=0
+    newImg(:,end,:)= [];
 end
 
 imageY  = newImg(:,:,1);
