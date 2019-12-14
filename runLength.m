@@ -1,4 +1,7 @@
-%% Run Length Encoding
+% Konstantinos Letros 8851
+% Multimedia Systems Project
+% Run Length Encoding
+
 function runSymbols = runLength(qBlock, DCpred)
 
 % Part 1

@@ -1,4 +1,7 @@
-%% Inverse Run Length Encoding
+% Konstantinos Letros 8851
+% Multimedia Systems Project
+% Inverse Run Length Encoding
+
 function qBlock = irunLength(runSymbols, DCpred)
 
 % Part 1

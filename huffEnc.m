@@ -1,4 +1,7 @@
-%% Huffman Encoding
+% Konstantinos Letros 8851
+% Multimedia Systems Project
+% Huffman Encoding
+
 function huffStream = huffEnc(runSymbols)
 
 global Nx

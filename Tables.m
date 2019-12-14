@@ -1,3 +1,7 @@
+% Konstantinos Letros 8851
+% Multimedia Systems Project
+% Tables used for JPEG encoding
+
 %% Tables
 
 %% Luminance quantization table (page 143)

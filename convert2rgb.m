@@ -1,4 +1,7 @@
-%% Convert YCbCr Image to RGB Image
+% Konstantinos Letros 8851
+% Multimedia Systems Project
+% Convert YCbCr Image to RGB Image
+
 function imageRGB = convert2rgb(imageY, imageCb, imageCr, subimg)
 
 % Preproccesing

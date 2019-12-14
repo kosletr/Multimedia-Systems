@@ -1,6 +1,6 @@
 % Konstantinos Letros 8851
 % Multimedia Systems Project
-% Demo 1
+% Demo 2
 
 %% Clean The Screen
 clc

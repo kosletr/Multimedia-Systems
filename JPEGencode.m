@@ -1,4 +1,7 @@
-%% JPEG Encoding
+% Konstantinos Letros 8851
+% Multimedia Systems Project
+% JPEG Encoding
+
 function JPEGenc = JPEGencode(img, subimg, qScale)
 
 global Nx;

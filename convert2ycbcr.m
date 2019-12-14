@@ -1,4 +1,7 @@
-%% Convert RGB Image to YCbCr Image
+% Konstantinos Letros 8851
+% Multimedia Systems Project
+% Convert RGB Image to YCbCr Image
+
 function [imageY, imageCb, imageCr] = convert2ycbcr(imageRBG, subimg)
 
 % Transformation Matrix

@@ -1,4 +1,7 @@
-%% JPEG Decode
+% Konstantinos Letros 8851
+% Multimedia Systems Project
+% JPEG Decode
+
 function imgRec = JPEGdecode(JPEGenc, subimg, qScale)
 
 global DCTable

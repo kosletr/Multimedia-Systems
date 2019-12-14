@@ -1,4 +1,7 @@
-%% Huffman Decoding
+% Konstantinos Letros 8851
+% Multimedia Systems Project
+% Huffman Decoding
+
 function runSymbols = huffDec(huffStream)
 
 global DCTable
