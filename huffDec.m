@@ -2,10 +2,10 @@
 % Multimedia Systems Project
 % Huffman Decoding
 
-function runSymbols = huffDec(huffStream)
+function runSymbols = huffDec(huffStream,type)
 
-global DCTable
-global ACTable
+global DCCategoryCode
+global ACCategoryCode
 
 % Convert bytes to binary stream
 binaryStream = [];
@@ -23,12 +23,12 @@ strStream = sprintf('%d',binaryStream(bit:stop));
 
 % DC Difference Coefficient
 % Repeat until unique reference (DC Table)
-while length(find(DCTable==strStream))~=1
+while length(find(DCCategoryCode{type}==strStream))~=1
     stop = stop + 1;
     strStream = sprintf('%d',binaryStream(bit:stop));
 end
 
-category = find(DCTable==strStream)-1;
+category = find(DCCategoryCode{type}==strStream)-1;
 bit = stop + 1;
 stop = stop + category;
 
@@ -57,17 +57,17 @@ while bit < length(binaryStream)
     strStream = sprintf('%d',binaryStream(bit:stop));
     
     % Repeat until unique reference (ACTable)
-    while length(find(ACTable==strStream))~=1
+    while length(find(ACCategoryCode{type}==strStream))~=1
         stop = stop + 1;
         strStream = sprintf('%d',binaryStream(bit:stop));
     end
     
-    if isequal(strStream , ACTable{1}) % EOB
+    if isequal(strStream , ACCategoryCode{type}{1}) % EOB
         runSymbols(k,:)= [0,0];
         break;
     end
     
-    indexAC = find(ACTable==strStream)-1;
+    indexAC = find(ACCategoryCode{type}==strStream)-1;
     precZeros = fix(indexAC/10);
     category = mod(indexAC,10);
     if indexAC > 151
@@ -77,7 +77,7 @@ while bit < length(binaryStream)
     bit = stop + 1;
     stop = stop + category;
     
-    if isequal(strStream , ACTable{152}) % ZRL
+    if isequal(strStream , ACCategoryCode{type}{152}) % ZRL
         runSymbols(k,:)= [15,0];
         k = k + 1;
         stop = stop + 1;

@@ -4,8 +4,12 @@
 
 function JPEGenc = JPEGencode(img, subimg, qScale)
 
-global Nx;
+global DCCategoryCode;
+global ACCategoryCode;
 Tables;
+
+
+types = ["Y","Cb","Cr"];
 
 YCbCr = cell(1,3);
 [YCbCr{1},YCbCr{2},YCbCr{3}] = convert2ycbcr(img,subimg);
@@ -33,7 +37,7 @@ for blockType = 1 : 3
     for indHor = 1 : size(YCbCr{blockType},1)/8
         for indVer = 1 : size(YCbCr{blockType},2)/8
             
-            Nx.blkType = blockType;
+            Nx.blkType = types(blockType);
             Nx.indHor = indHor;
             Nx.indVer = indVer;
             Nx.DCTable = DCCategoryCode{blockType};
@@ -53,7 +57,7 @@ for blockType = 1 : 3
             runSymbols = runLength(qBlock,DCpred);
             DCpred = qBlock(1,1);
             
-            Nx.huffStream = huffEnc(runSymbols);
+            Nx.huffStream = huffEnc(runSymbols,blockType);
             
             JPEGenc{count} = Nx;
             count = count + 1;

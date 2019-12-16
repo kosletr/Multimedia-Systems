@@ -2,9 +2,11 @@
 % Multimedia Systems Project
 % Huffman Encoding
 
-function huffStream = huffEnc(runSymbols)
+function huffStream = huffEnc(runSymbols,type)
 
-global Nx
+global DCCategoryCode
+global ACCategoryCode
+
 binaryStream = [];
 
 for k = 1:size(runSymbols,1)
@@ -35,7 +37,7 @@ for k = 1:size(runSymbols,1)
     if k==1
         % Find Index of Category in DC table
         huffmanInd = category + 1;
-        DCvector=[Nx.DCTable{huffmanInd}-'0',magnitude];
+        DCvector=[DCCategoryCode{type}{huffmanInd}-'0',magnitude];
         binaryStream = [binaryStream,DCvector];
     else
         % Find Index of Run/Category in AC table
@@ -45,7 +47,7 @@ for k = 1:size(runSymbols,1)
         elseif isequal(runSymbols(k,:),[0 0]) % EOB
             magnitude = [];
         end
-        ACvector = [Nx.ACTable{huffmanInd}-'0',magnitude];
+        ACvector = [ACCategoryCode{type}{huffmanInd}-'0',magnitude];
         binaryStream = [binaryStream,ACvector];
     end
     
