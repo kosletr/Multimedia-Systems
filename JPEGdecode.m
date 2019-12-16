@@ -13,9 +13,6 @@ for count = 2 : length(JPEGenc)
     indHor  = JPEGenc{count}.indHor;
     indVer  = JPEGenc{count}.indVer;
     
-    DCTable = JPEGenc{count}.DCTable;
-    ACTable = JPEGenc{count}.ACTable;
-    
     type = find(blockType==types);
     
     if type == 1

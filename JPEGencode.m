@@ -37,11 +37,9 @@ for blockType = 1 : 3
     for indHor = 1 : size(YCbCr{blockType},1)/8
         for indVer = 1 : size(YCbCr{blockType},2)/8
             
-            Nx.blkType = types(blockType);
-            Nx.indHor = indHor;
-            Nx.indVer = indVer;
-            Nx.DCTable = DCCategoryCode{blockType};
-            Nx.ACTable = ACCategoryCode{blockType};
+            blk.blkType = types(blockType);
+            blk.indHor = indHor;
+            blk.indVer = indVer;
             
             if blockType == 1
                 qTable = tables.qTableL;
@@ -57,9 +55,9 @@ for blockType = 1 : 3
             runSymbols = runLength(qBlock,DCpred);
             DCpred = qBlock(1,1);
             
-            Nx.huffStream = huffEnc(runSymbols,blockType);
+            blk.huffStream = huffEnc(runSymbols,blockType);
             
-            JPEGenc{count} = Nx;
+            JPEGenc{count} = blk;
             count = count + 1;
         end
     end

@@ -8,13 +8,8 @@ clc
 clear
 %% Main
 
-imgStruct = load('img1_down.mat');
-img1 = imgStruct.img1_down;
-imgStruct = load('img2_down.mat');
-img2 = imgStruct.img2_down;
-
-resultsFunc(img1)
-resultsFunc(img2)
+img = imread('pics/flower2.jpg');
+resultsFunc(img)
 
 %% Results Function
 function resultsFunc(img)
@@ -26,32 +21,30 @@ subimg = [4,4,4;
     4,2,2;
     4,2,0];
 
-qScale = [0.1; 0.3; 0.6; 1; 2; 5; 10];
+qScale = 1;
 
 bitsNum = zeros(length(qScale),1);
 mseImg = length(qScale);
 
 for s = 1 : 3
-    for q = 1 :length(qScale)
-        
-        JPEGenc = JPEGencode(img,subimg(s,:),qScale(q));
-        
-        for c = 2 : length(JPEGenc)
-            bitsNum(q) = bitsNum(q) + length(JPEGenc{c}.huffStream)*8;
-        end
-        
-        imgREC = JPEGdecode(JPEGenc,subimg(s,:),qScale(q));
-        %         figure
-        %         imshow(imgREC)
-        %
-        %         imgRec = zeros(size(img));
-        %         imgRec(1:size(imgREC,1),1:size(imgREC,2),1:size(imgREC,3)) = imgREC;
-        %         figure
-        %         imshow(uint8(double(img)-imgRec))
-        
-        mseImg(q) = mseEval(img,imgREC);
-        
+    
+    JPEGenc = JPEGencode(img,subimg(s,:),qScale);
+    
+    for c = 2 : length(JPEGenc)
+        bitsNum(q) = bitsNum(q) + length(JPEGenc{c}.huffStream)*8;
     end
+    
+    imgREC = JPEGdecode(JPEGenc,subimg(s,:),qScale);
+    %         figure
+    %         imshow(imgREC)
+    %
+    %         imgRec = zeros(size(img));
+    %         imgRec(1:size(imgREC,1),1:size(imgREC,2),1:size(imgREC,3)) = imgREC;
+    %         figure
+    %         imshow(uint8(double(img)-imgRec))
+    
+    mseImg(q) = mseEval(img,imgREC);
+    
     
     figure
     bar(qScale,mseImg)
@@ -76,5 +69,19 @@ imgRec(1:size(imgREC,1),1:size(imgREC,2),1:size(imgREC,3)) = imgREC;
 
 % Calculate MSE
 MSE  = 1/((size(img,1)*size(img,2)) * sum(sum(sum((double(img)-imgRec).^2))));
+
+end
+
+%% Save Plot
+function savePlot(name)
+
+% Resize current figure to fullscreen for higher resolution image
+set(gcf, 'Position', get(0, 'Screensize'));
+
+% Save current figure with the specified name
+saveas(gcf, join([name,'.jpg']));
+
+% Resize current figure back to normal
+set(gcf,'position',get(0,'defaultfigureposition'));
 
 end
