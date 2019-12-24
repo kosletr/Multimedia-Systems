@@ -25,7 +25,7 @@ for count = 2 : length(JPEGenc)
         DCpred = 0;
     end
     
-    runSymbols = huffDec(JPEGenc{count}.huffStream,type);
+    runSymbols = huffDec(double(JPEGenc{count}.huffStream),type);
     
     qBlock = irunLength(runSymbols,DCpred);
     

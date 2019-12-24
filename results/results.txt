@@ -1,0 +1,22 @@
+qScale = [0.1 , 0.3 , 0.6 , 1 , 2 , 5 , 10]
+
+Image 1
+
+Compression Ratio: 3.605799568025212
+Compression Ratio: 6.941214851423296
+Compression Ratio: 10.778068785634989
+Compression Ratio: 14.566218027151429
+Compression Ratio: 22.082367229767030
+Compression Ratio: 38.592158073479467
+Compression Ratio: 58.452186111760575
+
+
+Image 2
+
+Compression Ratio: 7.892472948548968
+Compression Ratio: 13.578101238322832
+Compression Ratio: 19.268193992177114
+Compression Ratio: 24.873765639380146
+Compression Ratio: 34.431704713700377
+Compression Ratio: 48.844820006838269
+Compression Ratio: 57.454754380925017

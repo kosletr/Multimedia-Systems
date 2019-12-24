@@ -26,7 +26,7 @@ qScale = 1;
 bitsNum = zeros(length(qScale),1);
 mseImg = length(qScale);
 
-for s = 1 : 3
+for s = 1 : size(subimg,1)
     
     JPEGenc = JPEGencode(img,subimg(s,:),qScale);
     
