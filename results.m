@@ -30,6 +30,7 @@ qScale = [0.1; 0.3; 0.6; 1; 2; 5; 10];
 
 bitsNum = zeros(length(qScale),1);
 mseImg = length(qScale);
+imageSize = size(img,1)*size(img,2)*size(img,3)*8;
 
 for s = 1 : 3
     for q = 1 :length(qScale)
@@ -39,6 +40,9 @@ for s = 1 : 3
         for c = 2 : length(JPEGenc)
             bitsNum(q) = bitsNum(q) + length(JPEGenc{c}.huffStream)*8;
         end
+        
+        
+        compRatio(q) = bitsNum(q)/imageSize;
         
         imgREC = JPEGdecode(JPEGenc,subimg(s,:),qScale(q));
         %         figure
@@ -52,6 +56,8 @@ for s = 1 : 3
         mseImg(q) = mseEval(img,imgREC);
         
     end
+    
+    fprintf("Compression Ratios: %f", compRatio)
     
     figure
     bar(qScale,mseImg)

@@ -18,19 +18,19 @@ img2 = imgStruct.img2_down;
 part = 'A';
 
 % Image 1
-mainDemo(img1, [4 2 0], 1, part)
+mainDemo(img1, [4 2 2], 1, part)
 
 % Image 2
-mainDemo(img2, [4 2 2], 2, part)
+mainDemo(img2, [4 4 4], 2, part)
 
 %% Part B
 part = 'B';
 
 % Image 1
-mainDemo(img1, [4 4 4], 1, part)
+mainDemo(img1, [4 2 2], 1, part)
 
 % Image 2
-mainDemo(img2, [4 2 2], 2, part)
+mainDemo(img2, [4 4 4], 2, part)
 
 %% Main Function
 
@@ -60,8 +60,6 @@ title('Original Image ');
 subplot(1,2,2)
 imshow(RGBimage);
 title('Reconstructed Image');
-
-suptitle(['Image ',num2str(imgNum),' - Part ',part])
 
 end
 

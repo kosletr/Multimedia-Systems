@@ -55,7 +55,7 @@ end
 
 % Zero padding to create bytes
 while (mod(length(binaryStream),8)) ~= 0
-    binaryStream(end+1)=0;
+    binaryStream(end+1)=1;
 end
 
 % Convert Stream to bytes
