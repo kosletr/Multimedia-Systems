@@ -1,22 +1,41 @@
-qScale = [0.1 , 0.3 , 0.6 , 1 , 2 , 5 , 10]
+Image 1 Results 
 
-Image 1
-
-Compression Ratio: 3.605799568025212
-Compression Ratio: 6.941214851423296
-Compression Ratio: 10.778068785634989
-Compression Ratio: 14.566218027151429
-Compression Ratio: 22.082367229767030
-Compression Ratio: 38.592158073479467
-Compression Ratio: 58.452186111760575
+qScale: 0.100000 - Compression Ratio: 3.605804 - MSE: 300.949589 - Number of bits: 1663984 
+qScale: 0.300000 - Compression Ratio: 6.941231 - MSE: 351.345965 - Number of bits: 864400 
+qScale: 0.600000 - Compression Ratio: 10.778030 - MSE: 390.418624 - Number of bits: 556688 
+qScale: 1.000000 - Compression Ratio: 14.566218 - MSE: 426.652447 - Number of bits: 411912 
+qScale: 2.000000 - Compression Ratio: 22.082205 - MSE: 485.784207 - Number of bits: 271712 
+qScale: 5.000000 - Compression Ratio: 38.592158 - MSE: 620.643896 - Number of bits: 155472 
+qScale: 10.000000 - Compression Ratio: 58.452186 - MSE: 829.398336 - Number of bits: 102648 
 
 
-Image 2
+Image 2 Results 
 
-Compression Ratio: 7.892472948548968
-Compression Ratio: 13.578101238322832
-Compression Ratio: 19.268193992177114
-Compression Ratio: 24.873765639380146
-Compression Ratio: 34.431704713700377
-Compression Ratio: 48.844820006838269
-Compression Ratio: 57.454754380925017
+qScale: 0.100000 - Compression Ratio: 7.892494 - MSE: 121.736635 - Number of bits: 760216 
+qScale: 0.300000 - Compression Ratio: 13.578101 - MSE: 125.606979 - Number of bits: 441888 
+qScale: 0.600000 - Compression Ratio: 19.268318 - MSE: 130.067600 - Number of bits: 311392 
+qScale: 1.000000 - Compression Ratio: 24.873972 - MSE: 135.220281 - Number of bits: 241216 
+qScale: 2.000000 - Compression Ratio: 34.432100 - MSE: 147.875707 - Number of bits: 174256 
+qScale: 5.000000 - Compression Ratio: 48.844025 - MSE: 193.014277 - Number of bits: 122840 
+qScale: 10.000000 - Compression Ratio: 57.453654 - MSE: 304.141904 - Number of bits: 104432
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Image 1 Results 
+
+AC Terms Removed:  0 - Compression Ratio: 14.566218 - MSE: 426.652447 - Number of bits: 411912 
+AC Terms Removed: 20 - Compression Ratio: 14.546724 - MSE: 426.375592 - Number of bits: 412464 
+AC Terms Removed: 40 - Compression Ratio: 14.968865 - MSE: 437.987676 - Number of bits: 400832 
+AC Terms Removed: 50 - Compression Ratio: 17.095186 - MSE: 472.889904 - Number of bits: 350976 
+AC Terms Removed: 60 - Compression Ratio: 22.438295 - MSE: 537.856203 - Number of bits: 267400 
+AC Terms Removed: 63 - Compression Ratio: 26.391724 - MSE: 568.450919 - Number of bits: 227344 
+
+
+Image 2 Results 
+
+AC Terms Removed:  0 - Compression Ratio: 24.873972 - MSE: 135.220281 - Number of bits: 241216 
+AC Terms Removed: 20 - Compression Ratio: 24.873972 - MSE: 135.220281 - Number of bits: 241216 
+AC Terms Removed: 40 - Compression Ratio: 24.876447 - MSE: 135.220691 - Number of bits: 241192 
+AC Terms Removed: 50 - Compression Ratio: 25.806896 - MSE: 137.412996 - Number of bits: 232496 
+AC Terms Removed: 60 - Compression Ratio: 30.875633 - MSE: 151.104313 - Number of bits: 194328 
+AC Terms Removed: 63 - Compression Ratio: 37.082818 - MSE: 167.981985 - Number of bits: 161800 

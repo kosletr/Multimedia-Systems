@@ -52,14 +52,16 @@ end
 RGBimage = convert2rgb(Y,Cb,Cr, subimg);
 
 figure
-
-subplot(1,2,1)
 imshow(img);
-title('Original Image ');
+title('Original Image');
 
-subplot(1,2,2)
+figure
 imshow(RGBimage);
-title('Reconstructed Image');
+if part == "B"
+    title(['Reconstructed Image - Subsampling: [',num2str(subimg),']',' - qScale: ',num2str(qScale(imgNum))])
+else
+    title('Reconstructed Image')
+end
 
 end
 
