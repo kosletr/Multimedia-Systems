@@ -53,19 +53,20 @@ for k = 1:size(runSymbols,1)
     
 end
 
-% Zero padding to create bytes
-while (mod(length(binaryStream),8)) ~= 0
-    binaryStream(end+1)=1;
-end
-
-% Convert Stream to bytes
-i = 0;
-k = 1;
-huffStream = zeros(1,length(binaryStream)/8);
-while i < length(binaryStream)
-    huffStream(k) = uint8(bi2de(binaryStream(i+1:i+8),'left-msb'));
-    i = i + 8;
-    k = k + 1;
-end
+% % Zero padding to create bytes
+% while (mod(length(binaryStream),8)) ~= 0
+%     binaryStream(end+1)=1;
+% end
+% 
+% % Convert Stream to bytes
+% i = 0;
+% k = 1;
+% huffStream = zeros(1,length(binaryStream)/8);
+% while i < length(binaryStream)
+%     huffStream(k) = uint8(bi2de(binaryStream(i+1:i+8),'left-msb'));
+%     i = i + 8;
+%     k = k + 1;
+% end
+huffStream = binaryStream;
 
 end

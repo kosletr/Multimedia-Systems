@@ -7,11 +7,12 @@ function runSymbols = huffDec(huffStream,type)
 global DCCategoryCode
 global ACCategoryCode
 
-% Convert bytes to binary stream
-binaryStream = [];
-for i = 1:length(huffStream)
-    binaryStream = [binaryStream,de2bi(huffStream(i),8,'left-msb')];
-end
+% % Convert bytes to binary stream
+% binaryStream = [];
+% for i = 1:length(huffStream)
+%     binaryStream = [binaryStream,de2bi(huffStream(i),8,'left-msb')];
+% end
+binaryStream = huffStream;
 
 % Initialize
 k=1;

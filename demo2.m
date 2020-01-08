@@ -19,7 +19,7 @@ img2 = imgStruct.img2_down;
 %% Function to measure Entropy
 function [rgbEntropy,qDCTEntropy,rleEntropy] = EntropyMeasure(img,subimg,qScale)
 
-rgbEntropy = entropy(img(:,:,1))+entropy(img(:,:,2))+entropy(img(:,:,3));
+rgbEntropy = ( entropy(img(:,:,1))+entropy(img(:,:,2))+entropy(img(:,:,3)) )*numel(img);
 
 qDCTEntropy = 0;
 rleEntropy = 0;
@@ -50,15 +50,12 @@ for blockType = 1 : 3
             
         end
     end
-    qDCTEntropy = qDCTEntropy + entropy(qDCTStack);
-    rleEntropy = rleEntropy + entropy(rleStack);
-            
-            figure
-            histogram(qDCTStack)
-            title(num2str(entropy(qDCTStack)))
-            figure
-            histogram(rleStack)
-            title(num2str(entropy(rleStack)))
+    
+    rleSymbols = rleStack(:,1)*1e4+rleStack(:,2);
+    
+    qDCTEntropy = qDCTEntropy + entropy(qDCTStack)*numel(qDCTStack);
+    rleEntropy = rleEntropy + entropy(rleSymbols)*numel(rleSymbols);
+
 end
 
 end

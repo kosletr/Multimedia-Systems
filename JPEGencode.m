@@ -55,7 +55,7 @@ for blockType = 1 : 3
             runSymbols = runLength(qBlock,DCpred);
             DCpred = qBlock(1,1);
             
-            blk.huffStream = uint8(huffEnc(runSymbols,blockType));
+            blk.huffStream = huffEnc(runSymbols,blockType);
             
             JPEGenc{count} = blk;
             count = count + 1;
