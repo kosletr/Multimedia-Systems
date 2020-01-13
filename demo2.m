@@ -19,7 +19,8 @@ img2 = imgStruct.img2_down;
 %% Function to measure Entropy
 function [rgbEntropy,qDCTEntropy,rleEntropy] = EntropyMeasure(img,subimg,qScale)
 
-rgbEntropy = ( entropy(img(:,:,1))+entropy(img(:,:,2))+entropy(img(:,:,3)) )*numel(img);
+rgbEntropy = entropy(img(:,:,1))*numel(img(:,:,1))+ ... 
+    entropy(img(:,:,2))*numel(img(:,:,2))+entropy(img(:,:,3))*numel(img(:,:,3));
 
 qDCTEntropy = 0;
 rleEntropy = 0;

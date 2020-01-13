@@ -45,9 +45,6 @@ bitsNum = zeros(length(qScale),1);
 mseImg = zeros(length(qScale),1);
 compRatio = zeros(length(qScale),1);
 
-% Original Image Size
-imageSize = size(img,1)*size(img,2)*size(img,3);
-
 fprintf("Image Results \n\n")
 
 % Main Loop
@@ -61,9 +58,9 @@ for q = 1 :length(qScale)
     end
     
     % Calculate Compression Ratio
-    compRatio(q) = (imageSize*8)/bitsNum(q);
+    compRatio(q) = (numel(img)*8)/bitsNum(q);
     
-    imgREC = JPEGdecode(JPEGenc,subimg,qScale(q));
+    imgREC = JPEGdecode(JPEGenc);
     
     % Show reconstructed Image
     figure
@@ -81,7 +78,7 @@ for q = 1 :length(qScale)
     title(['Subsampling: [',num2str(subimg),']',' - qScale: ',num2str(qScale(q)),' - Image Error'])
     
     % Evaluate Mean Square Error
-    mseImg(q) = 1/imageSize * sum((double(img(:))-imgRec(:)).^2);
+    mseImg(q) = 1/numel(img) * sum((double(img(:))-imgRec(:)).^2);
     
     fprintf("qScale: %f - Compression Ratio: %f - MSE: %f - Number of bits: %d \n", ...
         qScale(q), compRatio(q), mseImg(q), bitsNum(q))
