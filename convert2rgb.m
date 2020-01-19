@@ -2,7 +2,7 @@
 % Multimedia Systems Project
 % Convert YCbCr Image to RGB Image
 
-function imageRGB = convert2rgb(imageY, imageCb, imageCr, subimg)
+function imageRGB = convert2rgb(imageY, imageCr, imageCb, subimg)
 
 % Preproccesing
 imageYCbCr(:,:,1)=imageY;

@@ -53,6 +53,6 @@ else
     fprintf('Error - Subimg \n\n');
 end
 
-imgRec = convert2rgb(YCbCr{1},YCbCr{2},YCbCr{3}, subimg);
+imgRec = convert2rgb(YCbCr{1},YCbCr{3},YCbCr{2}, subimg);
 
 end

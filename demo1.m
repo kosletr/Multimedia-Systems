@@ -49,7 +49,7 @@ if part == 'B'
     partBDemo(YCbCr,qScale(imgNum));
 end
 
-RGBimage = convert2rgb(Y,Cb,Cr, subimg);
+RGBimage = convert2rgb(Y,Cr,Cb, subimg);
 
 figure
 imshow(img);

@@ -95,7 +95,7 @@ xlabel('qScale Values')
 ylabel('Mean Sqaure Error')
 
 figure
-plot(bitsNum,mseImg)
+plot(bitsNum,mseImg,'x-','MarkerSize',10,'LineWidth',1.5)
 title(['Subsampling: [',num2str(subimg),']'])
 xlabel('Number of Bits in Bitstream')
 ylabel('Mean Sqaure Error')

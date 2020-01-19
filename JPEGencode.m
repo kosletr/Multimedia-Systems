@@ -41,8 +41,8 @@ for blockType = 1 : 3
             
             if isequal(subimg,[4 2 0]) && blockType == 1
                 indHor = mod(ceil((size(YCbCr{blockType},2)/8*(j-1)+k)/2)+1,2)+1+2*floor((j-1)/2);
-                indVer = mod(k-1,2)+1 + mod(2*floor((size(YCbCr{blockType},2)/8*(j-1)+k-1)/4),size(YCbCr{blockType},2)/8);
-%               fprintf('(%d,%d) --> (%d,%d) \n',j,k,indHor,indVer)
+                indVer = mod(k-1,2)+1 + ...
+                    mod(2*floor((size(YCbCr{blockType},2)/8*(j-1)+k-1)/4),size(YCbCr{blockType},2)/8);
             else
                 indHor = j;
                 indVer = k;
