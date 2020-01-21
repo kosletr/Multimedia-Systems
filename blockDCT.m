@@ -4,6 +4,6 @@
 
 function dctBlock = blockDCT(block)
 
-dctBlock =  dct2(block-128);
+dctBlock =  dct2(double(block)-128);
 
 end
