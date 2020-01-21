@@ -2,20 +2,20 @@
 % Multimedia Systems Project
 % Convert RGB Image to YCbCr Image
 
-function [imageY, imageCb, imageCr] = convert2ycbcr(imageRBG, subimg)
+function [imageY, imageCb, imageCr] = convert2ycbcr(imageRGB, subimg)
 
 % Transformation Matrix
 Tycbcr = [.299,.587,.114;
     -.168736,-.331264,.5;
     .5,-.418688,-.081312];
 
-newImg = zeros(size(imageRBG));
+newImg = zeros(size(imageRGB));
 n = zeros(3,1);
 
 % Transformation from RGB to YCbCr
-for i = 1:size(imageRBG,1)
-    for j = 1:size(imageRBG,2)
-        n(:,1) = imageRBG(i,j,1:3);
+for i = 1:size(imageRGB,1)
+    for j = 1:size(imageRGB,2)
+        n(:,1) = imageRGB(i,j,1:3);
         newImg(i,j,1:3) = [0,128,128]'+Tycbcr*n;
     end
 end

@@ -5,15 +5,19 @@ JPEGencLet = JPEGenc;
 clear JPEGenc
 Tables;
 
-score = 0;
-i=2;
-% for i = 2:length(JPEGencKyr)
-    score = score  + isequal(JPEGencKyr{i}.huffStream,uint8(JPEGencLet{i}.huffStream));
-% end
-fprintf('Score: %f%% \n', 100*score/length(JPEGencLet))
+i=10;
+JPEGencKyr{2}.huffStream(1:i)
+uint8(JPEGencLet{2}.huffStream(1:i))
 
-runSymbolsKyr = huffDec(double(JPEGencKyr{i}.huffStream));
-runSymbolsLet = huffDec(double(JPEGencLet{i}.huffStream));
+score = 0;
+ for i = 2:length(JPEGencKyr{2}.huffStream)
+    score = score  +  isequal(double(JPEGencKyr{2}.huffStream(i)),(JPEGencLet{2}.huffStream(i)));
+ end
+fprintf('Score: %f%% \n', 100*score/length(JPEGencLet{2}.huffStream))
+
+
+runSymbolsKyr = huffDec(double(JPEGencKyr{2}.huffStream));
+runSymbolsLet = huffDec(double(JPEGencLet{2}.huffStream));
 
 qBlockKyr = irunLength(runSymbolsKyr,0);
 qBlockLet = irunLength(runSymbolsLet,0);
