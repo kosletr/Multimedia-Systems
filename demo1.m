@@ -32,6 +32,15 @@ mainDemo(img1, [4 2 2], 1, part)
 % Image 2
 mainDemo(img2, [4 4 4], 2, part)
 
+%% Save Plots
+
+h =  findobj('type','figure');
+for i = 1 : length(h)
+    figure(i)
+    savePlot([mfilename,'_',num2str(i)])
+end
+
+
 %% Main Function
 
 function mainDemo(img,subimg,imgNum,part)
@@ -87,5 +96,19 @@ for blockType = 1 : 3
         end
     end
 end
+
+end
+
+%% Function to automatically save plots in high resolution
+function savePlot(name)
+
+% Resize current figure to fullscreen for higher resolution image
+set(gcf, 'Position', get(0, 'Screensize'));
+
+% Save current figure with the specified name
+saveas(gcf, join([name,'.jpg']));
+
+% Resize current figure back to normal
+set(gcf,'position',get(0,'defaultfigureposition'));
 
 end

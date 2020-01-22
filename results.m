@@ -54,7 +54,7 @@ for q = 1 :length(qScale)
     
     % Count bits of bit-Stream
     for c = 2 : length(JPEGenc)
-        bitsNum(q) = bitsNum(q) + length(JPEGenc{c}.huffStream)*8;
+        bitsNum(q) = bitsNum(q) + length(JPEGenc{c}.huffStream);
     end
     
     % Calculate Compression Ratio

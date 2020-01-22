@@ -18,8 +18,8 @@ imgStruct = load('img2_down.mat');
 img2 = imgStruct.img2_down;
 
 % Results Function
-% resultsBFunc(img1,[4 2 2],1)
-resultsBFunc(img2,[4 4 4],1)
+ resultsBFunc(img1,[4 2 2],0.6)
+resultsBFunc(img2,[4 4 4],5)
 
 % Save Plots
 h =  findobj('type','figure');

@@ -46,6 +46,8 @@ end
 
 % Removing EOB zeros
 runSymbols=runSymbols(1:lastNonZeroInd,:);
-runSymbols(end+1,:) = [0,0]; % EOB
+if lastNonZeroInd ~= 64
+    runSymbols(end+1,:) = [0,0]; % EOB
+end
 
 end
