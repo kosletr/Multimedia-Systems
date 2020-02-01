@@ -14,7 +14,8 @@ img1 = imgStruct.img1_down;
 imgStruct = load('img2_down.mat');
 img2 = imgStruct.img2_down;
 
-[rgbEntropy,qBlockEntropy,rleEntropy] = EntropyMeasure(img1,[4 2 0],1)
+[rgbEntropy1,qBlockEntropy1,rleEntropy1] = EntropyMeasure(img1,[4 2 2],0.6)
+[rgbEntropy2,qBlockEntropy2,rleEntropy2] = EntropyMeasure(img2,[4 4 4],5)
 
 %% Function to measure Entropy
 function [rgbEntropy,qDCTEntropy,rleEntropy] = EntropyMeasure(img,subimg,qScale)

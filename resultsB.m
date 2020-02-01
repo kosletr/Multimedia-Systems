@@ -18,8 +18,8 @@ imgStruct = load('img2_down.mat');
 img2 = imgStruct.img2_down;
 
 % Results Function
- resultsBFunc(img1,[4 2 2],0.6)
-resultsBFunc(img2,[4 4 4],5)
+resultsBFunc(img1,[4 2 2],1)
+resultsBFunc(img2,[4 4 4],1)
 
 % Save Plots
 h =  findobj('type','figure');
@@ -81,7 +81,9 @@ for n = 1 : length(terms)
         num2str(subimg),']',' - qScale: ',num2str(qScale),' - Image Error'])
     
     % Evaluate Mean Square Error
-    mseImg(n) = 1/imageSize * sum((double(img(:))-imgRec(:)).^2);
+    mseImg(n) = 1/numel(img(:,:,1)) * sum(sum((double(img(:,:,1))-imgRec(:,:,1)).^2)) + ...
+        1/numel(img(:,:,2)) * sum(sum((double(img(:,:,2))-imgRec(:,:,2)).^2)) + ...
+        1/numel(img(:,:,3)) * sum(sum((double(img(:,:,3))-imgRec(:,:,3)).^2));
     
     fprintf("AC Terms Removed: %d - Compression Ratio: %f - MSE: %f - Number of bits: %d \n", ...
         terms(n), compRatio(n), mseImg(n), bitsNum(n))

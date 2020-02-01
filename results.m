@@ -31,6 +31,10 @@ end
 %% Results Function
 function resultsFunc(img,subimg)
 
+N = mod(size(img,1),16);
+M = mod(size(img,2),16);
+img = img(1:end-N,1:end-M,:);
+
 % Show Original Image
 figure
 imshow(img)
@@ -78,7 +82,9 @@ for q = 1 :length(qScale)
     title(['Subsampling: [',num2str(subimg),']',' - qScale: ',num2str(qScale(q)),' - Image Error'])
     
     % Evaluate Mean Square Error
-    mseImg(q) = 1/numel(img) * sum((double(img(:))-imgRec(:)).^2);
+    mseImg(q) = 1/numel(img(:,:,1)) * sum(sum((double(img(:,:,1))-imgRec(:,:,1)).^2)) + ...
+        1/numel(img(:,:,2)) * sum(sum((double(img(:,:,2))-imgRec(:,:,2)).^2)) + ...
+        1/numel(img(:,:,3)) * sum(sum((double(img(:,:,3))-imgRec(:,:,3)).^2));
     
     fprintf("qScale: %f - Compression Ratio: %f - MSE: %f - Number of bits: %d \n", ...
         qScale(q), compRatio(q), mseImg(q), bitsNum(q))
