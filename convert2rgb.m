@@ -4,7 +4,7 @@
 
 function imageRGB = convert2rgb(imageY, imageCr, imageCb, subimg)
 
-% Preproccesing
+% Preproccesing to make compatible dimensions
 imageYCbCr(:,:,1)=imageY;
 
 if isequal(subimg,[4,4,4])

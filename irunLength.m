@@ -18,7 +18,7 @@ vec = [vec;zeros(64-length(vec),1)];
 
 % Part 2
 global zigZagTable
-Tables;
+% Tables;
 
 qBlock = zeros(sqrt(length(vec)));
 

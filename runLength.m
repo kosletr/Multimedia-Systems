@@ -6,7 +6,7 @@ function runSymbols = runLength(qBlock, DCpred)
 
 % Part 1
 global zigZagTable
-Tables;
+% Tables;
 
 zzBlockVec = zeros(length(qBlock)^2,1);
 

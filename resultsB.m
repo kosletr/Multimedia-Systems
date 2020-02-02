@@ -31,6 +31,10 @@ end
 %% Results Function
 function resultsBFunc(img,subimg,qScale)
 
+N = mod(size(img,1),16);
+M = mod(size(img,2),16);
+img = img(1:end-N,1:end-M,:);
+
 % Show Original Image
 figure
 imshow(img)
@@ -43,9 +47,6 @@ bitsNum = zeros(length(terms),1);
 mseImg = zeros(length(terms),1);
 compRatio = zeros(length(terms),1);
 
-% Original Image Size
-imageSize = size(img,1)*size(img,2)*size(img,3);
-
 fprintf("Image Results \n\n")
 
 % Main Loop
@@ -55,11 +56,11 @@ for n = 1 : length(terms)
     
     % Count bits of bit-Stream
     for c = 2 : length(JPEGenc)
-        bitsNum(n) = bitsNum(n) + length(JPEGenc{c}.huffStream)*8;
+        bitsNum(n) = bitsNum(n) + length(JPEGenc{c}.huffStream);
     end
     
     % Calculate Compression Ratio
-    compRatio(n) = (imageSize*8)/bitsNum(n);
+    compRatio(n) = (numel(img)*8)/bitsNum(n);
     
     imgREC = JPEGdecode(JPEGenc);
     
@@ -68,7 +69,6 @@ for n = 1 : length(terms)
     imshow(imgREC)
     title(['Subsampling: [',num2str(subimg),']',' - qScale: ',num2str(qScale),...
         ' - AC Terms Removed: ',num2str(terms(n)),' - Image Reconstruction'])
-    
     
     % Zero Padding to make compatible dimensions
     imgRec = zeros(size(img));
@@ -84,6 +84,7 @@ for n = 1 : length(terms)
     mseImg(n) = 1/numel(img(:,:,1)) * sum(sum((double(img(:,:,1))-imgRec(:,:,1)).^2)) + ...
         1/numel(img(:,:,2)) * sum(sum((double(img(:,:,2))-imgRec(:,:,2)).^2)) + ...
         1/numel(img(:,:,3)) * sum(sum((double(img(:,:,3))-imgRec(:,:,3)).^2));
+    
     
     fprintf("AC Terms Removed: %d - Compression Ratio: %f - MSE: %f - Number of bits: %d \n", ...
         terms(n), compRatio(n), mseImg(n), bitsNum(n))
