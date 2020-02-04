@@ -75,6 +75,9 @@ while bit < length(binaryStream)
     category = mod(indexAC,10);
     if indexAC > 151
         category = category - 1;
+    elseif indexAC < 11
+         precZeros = 0;
+         category = indexAC;
     end
     
     bit = stop + 1;
