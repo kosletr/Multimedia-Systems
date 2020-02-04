@@ -6,6 +6,7 @@ function JPEGenc = JPEGencode(img, subimg, qScale)
 
 global blockType;
 
+global zigZagTable;
 global DCCategoryCode;
 global ACCategoryCode;
 Tables;

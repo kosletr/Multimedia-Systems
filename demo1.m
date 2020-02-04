@@ -5,6 +5,7 @@
 %% Clean The Screen
 clc
 clear
+clear global
 close all
 
 %% Load Images
@@ -34,11 +35,11 @@ mainDemo(img2, [4 4 4], 2, part)
 
 %% Save Plots
 
-h =  findobj('type','figure');
-for i = 1 : length(h)
-    figure(i)
-    savePlot([mfilename,'_',num2str(i)])
-end
+% h =  findobj('type','figure');
+% for i = 1 : length(h)
+%     figure(i)
+%     savePlot([mfilename,'_',num2str(i)])
+% end
 
 
 %% Main Function

@@ -7,6 +7,7 @@
 close all
 clc
 clear
+clear global
 format long g
 
 %% Main
@@ -22,11 +23,12 @@ resultsFunc(img1,[4 2 2])
 resultsFunc(img2,[4 4 4])
 
 % Save Plots
-h =  findobj('type','figure');
-for i = 1 : length(h)
-    figure(i)
-    savePlot([mfilename,'_',num2str(i)])
-end
+
+% h =  findobj('type','figure');
+% for i = 1 : length(h)
+%     figure(i)
+%     savePlot([mfilename,'_',num2str(i)])
+% end
 
 %% Results Function
 function resultsFunc(img,subimg)

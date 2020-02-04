@@ -7,6 +7,7 @@
 close all
 clc
 clear
+clear global
 format long g
 
 %% Main
@@ -22,11 +23,12 @@ resultsBFunc(img1,[4 2 2],1)
 resultsBFunc(img2,[4 4 4],1)
 
 % Save Plots
-h =  findobj('type','figure');
-for i = 1 : length(h)
-    figure(i)
-    savePlot([mfilename,'_',num2str(i)])
-end
+
+% h =  findobj('type','figure');
+% for i = 1 : length(h)
+%     figure(i)
+%     savePlot([mfilename,'_',num2str(i)])
+% end
 
 %% Results Function
 function resultsBFunc(img,subimg,qScale)
@@ -115,6 +117,7 @@ function JPEGenc = JPEGencodeD(img, subimg, qScale, n)
 
 global blockType;
 
+global zigZagTable;
 global DCCategoryCode;
 global ACCategoryCode;
 Tables;
