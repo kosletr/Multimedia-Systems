@@ -5,6 +5,7 @@
 %% Clean The Screen
 clc
 clear
+clear global
 close all
 
 %% Load Images
@@ -28,6 +29,7 @@ rleEntropy = 0;
 
 YCbCr = cell(1,3);
 [YCbCr{1},YCbCr{2},YCbCr{3}] = convert2ycbcr(img,subimg);
+global zigZagTable;
 Tables;
 
 for blockType = 1 : 3
