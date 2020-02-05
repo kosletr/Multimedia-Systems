@@ -21,8 +21,8 @@ img2 = imgStruct.img2_down;
 %% Function to measure Entropy
 function [rgbEntropy,qDCTEntropy,rleEntropy] = EntropyMeasure(img,subimg,qScale)
 
-rgbEntropy = entropy(img(:,:,1))*numel(img(:,:,1))+ ... 
-    entropy(img(:,:,2))*numel(img(:,:,2))+entropy(img(:,:,3))*numel(img(:,:,3));
+rgbEntropy = myEntropy(img(:,:,1))*numel(img(:,:,1))+ ...
+    myEntropy(img(:,:,2))*numel(img(:,:,2))+myEntropy(img(:,:,3))*numel(img(:,:,3));
 
 qDCTEntropy = 0;
 rleEntropy = 0;
@@ -57,9 +57,19 @@ for blockType = 1 : 3
     
     rleSymbols = rleStack(:,1)*1e4+rleStack(:,2);
     
-    qDCTEntropy = qDCTEntropy + entropy(qDCTStack)*numel(qDCTStack);
-    rleEntropy = rleEntropy + entropy(rleSymbols)*numel(rleSymbols);
+    qDCTEntropy = qDCTEntropy + myEntropy(qDCTStack)*numel(qDCTStack);
+    rleEntropy = rleEntropy + myEntropy(rleSymbols)*numel(rleSymbols);
+    
+end
 
 end
+
+function res = myEntropy(Array)
+
+tab = tabulate(Array(:));
+p = tab(:,end)/100;
+en = p.*log2(1./p);
+en(isnan(en)) = 0;
+res = sum(en);
 
 end
