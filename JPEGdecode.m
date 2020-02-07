@@ -38,19 +38,19 @@ for count = 2 : length(JPEGenc)
     
 end
 
-lenY = size(YCbCr{1},2);
+lenYHor = size(YCbCr{1},1);
+lenYVer = size(YCbCr{1},2);
 lenCbCrHor = size(YCbCr{2},1);
 lenCbCrVer = size(YCbCr{2},2);
 
-if lenY/lenCbCrHor == 1 && lenY/lenCbCrVer == 1
+if lenYHor/lenCbCrHor == 1 && lenYVer/lenCbCrVer == 1
     subimg = [4 4 4];
-elseif lenY/lenCbCrHor == 1 && lenY/lenCbCrVer == 2
+elseif lenYHor/lenCbCrHor == 1 && lenYVer/lenCbCrVer == 2
     subimg = [4 2 2];
-elseif lenY/lenCbCrHor == 2 && lenY/lenCbCrVer == 2
+elseif lenYHor/lenCbCrHor == 2 && lenYVer/lenCbCrVer == 2
     subimg = [4 2 0];
 else
-    subimg = [];
-    fprintf('Error - Subimg \n\n');
+    error("Invalid Subsampling Vector.")
 end
 
 imgRec = convert2rgb(YCbCr{1},YCbCr{3},YCbCr{2}, subimg);
