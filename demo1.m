@@ -56,7 +56,10 @@ if part == 'B'
     YCbCr{2}=Cb;
     YCbCr{3}=Cr;
     
-    partBDemo(YCbCr,qScale(imgNum));
+    YCbCrInv = partBDemo(YCbCr,qScale(imgNum));
+    Y = YCbCrInv{1};
+    Cb = YCbCrInv{2};
+    Cr = YCbCrInv{3};
 end
 
 RGBimage = convert2rgb(Y,Cr,Cb, subimg);
