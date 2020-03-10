@@ -1,7 +1,7 @@
 # Multimedia-Systems
 
 ### Description
-This collection of scripts was created for the scope of an assignment in a Fuzzy Systems cource of the Aristotle University of Thessaloniki during the 2019-20 academic year. The purpose of these scripts is to demonstrate the implementation of the baseline sequential DCT based (Lossy) JPEG encoder and decoder as described by ISO-IEC-10918-1-1993 standard.
+This collection of scripts was created for the scope of an assignment in a Multimedia Systems cource of the Aristotle University of Thessaloniki during the 2019-20 academic year. The purpose of these scripts is to demonstrate the implementation of the baseline sequential DCT based (Lossy) JPEG encoder and decoder as described by ISO-IEC-10918-1-1993 standard.
 
 ![JPEG Encoded BitStream](https://github.com/kosletr/Multimedia-Systems/blob/master/Pics/Screenshot_8.jpg)
 
