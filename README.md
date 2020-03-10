@@ -13,7 +13,7 @@ Implementation of the JPEG standard, as well as examples of its functionality ar
 :-------------------------:|:-------------------------:
 ![](https://github.com/kosletr/Multimedia-Systems/blob/master/Pics/Screenshot_1.jpg) |  ![](https://github.com/kosletr/Multimedia-Systems/blob/master/Pics/Screenshot_2.jpg)
 
-Examples of the encoder/decoder process.
+Examples of the encoder/decoder results after encoding and then decoding 2 images.
 
    Example 1               |        Example 2 
 :-------------------------:|:-------------------------:
